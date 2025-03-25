@@ -40,13 +40,20 @@ public class Main {
                 articles.add(new Article(articleId, title, content, Util.getNow()));
                 System.out.println(articleId + "번 글이 생성되었습니다");
                 articleId++;
-            } else if (command.equals("article list")) {
-                System.out.println("번호  /  제목  / 내용");
-                for (int i = articles.size() - 1; i >= 0; i--) {
-                    Article a = articles.get(i);
+            } else if (command.startsWith("article list")) {
+            String[] cmdBits = command.split(" ", 3);
+            String keyword = cmdBits.length >= 3 ? cmdBits[2] : "";
+
+            System.out.println("번호  /  제목  / 내용");
+
+            for (int i = articles.size() - 1; i >= 0; i--) {
+                Article a = articles.get(i);
+
+                if (keyword.isEmpty() || a.getTitle().contains(keyword)) {
                     System.out.println(" " + a.getId() + "   /   " + a.getTitle() + " /  " + a.getContent());
                 }
-            } else if (command.startsWith("article detail ")) {
+            }
+        } else if (command.startsWith("article detail ")) {
                 int id = Integer.parseInt(command.split(" ")[2]);
                 Article found = findArticleById(id, articles);
                 if (found == null) {
