@@ -1,19 +1,28 @@
 package org.example;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-import static org.example.Article.makeTestData;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void makeTestData(List<Article> articles, int startId) {
+        articles.add(new Article(startId++, "테스트 제목 1", "테스트 내용 1", Util.getNow()));
+        articles.add(new Article(startId++, "테스트 제목 2", "테스트 내용 2", Util.getNow()));
+        articles.add(new Article(startId++, "테스트 제목 3", "테스트 내용 3", Util.getNow()));
+    }
 
+    public static Article findArticleById(int id, List<Article> articles) {
+        for (Article a : articles) {
+            if (a.getId() == id) return a;
+        }
+        return null;
+    }
+    public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         List<Article> articles = new ArrayList<>();
         int articleId = 1;
+
+        // 테스트 게시글 생성
         makeTestData(articles, articleId);
         articleId += 3;
 
@@ -28,7 +37,7 @@ public class Main {
                 String title = sc.nextLine();
                 System.out.print("내용: ");
                 String content = sc.nextLine();
-                articles.add(new Article(articleId, title, content, LocalDateTime.now()));
+                articles.add(new Article(articleId, title, content, Util.getNow()));
                 System.out.println(articleId + "번 글이 생성되었습니다");
                 articleId++;
             } else if (command.equals("article list")) {
@@ -39,18 +48,12 @@ public class Main {
                 }
             } else if (command.startsWith("article detail ")) {
                 int id = Integer.parseInt(command.split(" ")[2]);
-                Article found = null;
-                for (Article a : articles) {
-                    if (a.getId() == id) {
-                        found = a;
-                        break;
-                    }
-                }
+                Article found = findArticleById(id, articles);
                 if (found == null) {
                     System.out.println(id + "번 게시글은 없습니다");
                 } else {
                     System.out.println("번호 : " + found.getId());
-                    System.out.println("날짜 : " + found.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    System.out.println("날짜 : " + Util.formatDateTime(found.getCreatedAt()));
                     System.out.println("제목 : " + found.getTitle());
                     System.out.println("내용 : " + found.getContent());
                 }
@@ -64,13 +67,7 @@ public class Main {
                 }
             } else if (command.startsWith("article modify ")) {
                 int id = Integer.parseInt(command.split(" ")[2]);
-                Article found = null;
-                for (Article a : articles) {
-                    if (a.getId() == id) {
-                        found = a;
-                        break;
-                    }
-                }
+                Article found = findArticleById(id, articles);
                 if (found == null) {
                     System.out.println(id + "번 게시글은 없습니다");
                 } else {
@@ -86,6 +83,7 @@ public class Main {
                 System.out.println("알 수 없는 명령어입니다.");
             }
         }
+
         sc.close();
     }
 }
@@ -103,41 +101,27 @@ class Article {
         this.createdAt = createdAt;
     }
 
-    public static void makeTestData(List<Article> articles, int startId) {
-        articles.add(new Article(startId++, "테스트 제목 1", "테스트 내용 1", LocalDateTime.now()));
-        articles.add(new Article(startId++, "테스트 제목 2", "테스트 내용 2", LocalDateTime.now()));
-        articles.add(new Article(startId++, "테스트 제목 3", "테스트 내용 3", LocalDateTime.now()));
-    }
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getContent() {
         return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
