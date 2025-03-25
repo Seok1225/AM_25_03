@@ -2,13 +2,20 @@ package org.example;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import static org.example.Article.makeTestData;
 
 public class Main {
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
         List<Article> articles = new ArrayList<>();
         int articleId = 1;
+        makeTestData(articles, articleId);
+        articleId += 3;
 
         while (true) {
             System.out.print("명령어) ");
@@ -82,6 +89,7 @@ public class Main {
         sc.close();
     }
 }
+
 class Article {
     private int id;
     private String title;
@@ -93,6 +101,12 @@ class Article {
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
+    }
+
+    public static void makeTestData(List<Article> articles, int startId) {
+        articles.add(new Article(startId++, "테스트 제목 1", "테스트 내용 1", LocalDateTime.now()));
+        articles.add(new Article(startId++, "테스트 제목 2", "테스트 내용 2", LocalDateTime.now()));
+        articles.add(new Article(startId++, "테스트 제목 3", "테스트 내용 3", LocalDateTime.now()));
     }
 
     public int getId() {
