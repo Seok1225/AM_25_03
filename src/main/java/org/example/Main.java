@@ -1,7 +1,6 @@
 package org.example;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,15 +24,24 @@ public class Main {
         return null;
     }
 
+    public static void makeTestMemberData(List<Member> members, int startId) {
+        members.add(new Member(startId++, "user1", "1234", "홍길동", Util.getNow()));
+        members.add(new Member(startId++, "user2", "abcd", "김철수", Util.getNow()));
+        members.add(new Member(startId++, "admin", "admin", "관리자", Util.getNow()));
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         List<Article> articles = new ArrayList<>();
         List<Member> members = new ArrayList<>();
+        Member loginedMember = null;
         int articleId = 1;
         int memberId = 1;
 
         makeTestData(articles, articleId);
         articleId += 3;
+        makeTestMemberData(members, memberId);
+        memberId += 3;
 
         while (true) {
             System.out.print("명령어) ");
@@ -74,6 +82,38 @@ public class Main {
                 members.add(new Member(memberId, loginId, loginPw, name, Util.getNow()));
                 System.out.println(memberId + "번 회원이 가입되었습니다.");
                 memberId++;
+            } else if (command.equals("member login")) {
+                if (loginedMember != null) {
+                    System.out.println("이미 로그인되어 있습니다: " + loginedMember.getName());
+                    continue;
+                }
+
+                System.out.print("로그인 ID: ");
+                String loginId = sc.nextLine().trim();
+                System.out.print("비밀번호: ");
+                String loginPw = sc.nextLine().trim();
+
+                Member found = null;
+                for (Member m : members) {
+                    if (m.getLoginId().equals(loginId) && m.getLoginPw().equals(loginPw)) {
+                        found = m;
+                        break;
+                    }
+                }
+
+                if (found == null) {
+                    System.out.println("로그인 정보가 일치하지 않습니다.");
+                } else {
+                    loginedMember = found;
+                    System.out.println(loginedMember.getName() + "님 환영합니다!");
+                }
+            } else if (command.equals("member logout")) {
+                if (loginedMember == null) {
+                    System.out.println("로그인 상태가 아닙니다.");
+                } else {
+                    System.out.println(loginedMember.getName() + "님 로그아웃 되었습니다.");
+                    loginedMember = null;
+                }
             } else if (command.startsWith("article write")) {
                 System.out.print("제목: ");
                 String title = sc.nextLine();
