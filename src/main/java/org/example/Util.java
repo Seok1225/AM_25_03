@@ -9,17 +9,12 @@ public class Util {
         return LocalDateTime.now();
     }
 
-    public static String formatDateTime(LocalDateTime dateTime) {
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
     public static String formatDateTimeSmart(LocalDateTime dateTime) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = getNow();
         if (dateTime.toLocalDate().isEqual(now.toLocalDate())) {
             return dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         } else {
             return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         }
     }
-
 }
