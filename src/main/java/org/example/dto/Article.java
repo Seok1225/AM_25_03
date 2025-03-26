@@ -1,11 +1,11 @@
-package org.example;
+package org.example.dto;
 
 import java.time.LocalDateTime;
 
 public class Article {
-    private final int id;
-    private final int memberId;
-    private final LocalDateTime createdAt;
+    private int id;
+    private int memberId;
+    private LocalDateTime createdAt;
     private String title;
     private String content;
     private LocalDateTime updatedAt;

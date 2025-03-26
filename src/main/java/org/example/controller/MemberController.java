@@ -1,20 +1,21 @@
-package org.example;
+package org.example.controller;
 
+import org.example.dto.Member;
+import org.example.util.Util;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class MemberController {
+public class MemberController extends Controller {
 
-    private final Scanner sc;
-    private final List<Member> members;
-    private Member loginedMember;
+    private List<Member> members = new ArrayList<>();
     private int memberId = 1;
 
     public MemberController(Scanner sc) {
-        this.sc = sc;
-        this.members = new java.util.ArrayList<>();
-        this.loginedMember = null;
+        super(sc);
 
+        // 테스트 멤버 생성
         members.add(new Member(memberId++, "user1", "1234", "홍길동", Util.getNow()));
         members.add(new Member(memberId++, "user2", "abcd", "김철수", Util.getNow()));
         members.add(new Member(memberId++, "admin", "admin", "관리자", Util.getNow()));
@@ -39,11 +40,19 @@ public class MemberController {
             System.out.print("로그인 ID: ");
             loginId = sc.nextLine().trim();
 
-            String finalLoginId = loginId;
-            boolean exists = members.stream().anyMatch(m -> m.getLoginId().equals(finalLoginId));
+            boolean exists = false;
+            for (Member m : members) {
+                if (m.getLoginId().equals(loginId)) {
+                    exists = true;
+                    break;
+                }
+            }
+
             if (exists) {
                 System.out.println("이미 존재하는 ID입니다.");
-            } else break;
+            } else {
+                break;
+            }
         }
 
         String loginPw;
@@ -94,10 +103,6 @@ public class MemberController {
             System.out.println(loginedMember.getName() + "님 로그아웃 되었습니다.");
             loginedMember = null;
         }
-    }
-
-    public Member getLoginedMember() {
-        return loginedMember;
     }
 
     public List<Member> getMembers() {

@@ -1,23 +1,28 @@
-package org.example;
+package org.example.controller;
+
+import org.example.dto.Article;
+import org.example.util.Util;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class ArticleController {
+public class ArticleController extends Controller {
 
-    private final Scanner sc;
-    private final List<Article> articles = new ArrayList<>();
+    private List<Article> articles = new ArrayList<>();
     private int articleId = 1;
-    private MemberController memberController;
 
     public ArticleController(Scanner sc) {
-        this.sc = sc;
-    }
+        super(sc);
 
-    public void setMemberController(MemberController memberController) {
-        this.memberController = memberController;
+        LocalDateTime now = Util.getNow();
+        LocalDateTime yesterday = now.minusDays(1);
+        LocalDateTime threeDaysAgo = now.minusDays(3);
+
+        articles.add(new Article(articleId++, "오늘 글 1", "내용 1", now, now, 1));
+        articles.add(new Article(articleId++, "어제 글", "내용 2", yesterday, yesterday, 2));
+        articles.add(new Article(articleId++, "3일 전 글", "내용 3", threeDaysAgo, threeDaysAgo, 3));
     }
 
     public void handleCommand(String cmd) {
@@ -37,10 +42,8 @@ public class ArticleController {
     }
 
     private void write() {
-        Member loginUser = memberController.getLoginedMember();
-
-        if (loginUser == null) {
-            System.out.println("로그인 후 사용 가능합니다.");
+        if (loginedMember == null) {
+            System.out.println("로그인 후 작성 가능합니다.");
             return;
         }
 
@@ -50,7 +53,7 @@ public class ArticleController {
         String content = sc.nextLine();
 
         LocalDateTime now = Util.getNow();
-        articles.add(new Article(articleId, title, content, now, now, loginUser.getId()));
+        articles.add(new Article(articleId, title, content, now, now, loginedMember.getId()));
         System.out.println(articleId + "번 글이 생성되었습니다");
         articleId++;
     }
@@ -90,9 +93,7 @@ public class ArticleController {
             return;
         }
 
-        Member loginUser = memberController.getLoginedMember();
-
-        if (loginUser == null || found.getMemberId() != loginUser.getId()) {
+        if (loginedMember == null || found.getMemberId() != loginedMember.getId()) {
             System.out.println("해당 게시글에 대한 권한이 없습니다.");
             return;
         }
@@ -110,9 +111,7 @@ public class ArticleController {
             return;
         }
 
-        Member loginUser = memberController.getLoginedMember();
-
-        if (loginUser == null || found.getMemberId() != loginUser.getId()) {
+        if (loginedMember == null || found.getMemberId() != loginedMember.getId()) {
             System.out.println("해당 게시글에 대한 권한이 없습니다.");
             return;
         }

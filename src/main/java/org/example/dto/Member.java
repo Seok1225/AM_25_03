@@ -1,14 +1,13 @@
-package org.example;
-
+package org.example.dto;
 import java.time.LocalDateTime;
 
 public class Member {
 
-    private final int id;
-    private final String loginId;
-    private final String loginPw;
-    private final String name;
-    private final LocalDateTime regDate;
+    private int id;
+    private String loginId;
+    private String loginPw;
+    private String name;
+    private LocalDateTime regDate;
 
     public Member(int id, String loginId, String loginPw, String name, LocalDateTime regDate) {
         this.id = id;
